@@ -1,15 +1,19 @@
 //JSX - Javascript XML
 //babel src/app.js --out-file=public/scripts/app.js --presets=env,react --watch(it will watch for changes)
 
-//We can write jsx in {} as well
-//boolean,undefined,null are ignored by jsx {true}, {null} etc
-//(true && 'abc') Here abc is returned but (false && 'abc') false is returned
-//This is not usually understood by the browser that's why we use babel to convert it into normal es5 javascript
-//See changes in public/scripts/app.js
-const app = {
+/*We can write jsx in {} as well
+boolean,undefined,null are ignored by jsx {true}, {null} etc
+(true && 'abc') Here abc is returned but (false && 'abc') false is returned
+jsx doesn't support arrays but it does support arrays
+{[1,2]} is treated as {1}{2}
+ numbers.map((number,index) => <p key={index}>Number : {number}</p>) This will return array to {} jsx expression
+We can use dom elements inside arrays in jsx but we do need to specify key for each of them
+This is not usually understood by the browser that's why we use babel to convert it into normal es5 javascript
+See changes in public/scripts/app.js */
+let app = {
     title : 'Indecision App',
-    subtitle : 'Subtitle',
-    options: ['One', 'Two'],
+    subtitle : 'Put your life in hands of your computer',
+    options: [],
     location : 'New Delhi'
 
 }
@@ -18,22 +22,51 @@ let getLocation = (location) => {
         return  <p>Location : {location}</p>
     }
 }
-const template = (
-    <div>
-        <h1>{app.title}</h1> 
-        {app.subtitle && <p>{app.subtitle}</p>}
-        {getLocation(app.location)} 
-        <p>{app.options.length > 0 ? 'Here are your options' : 'No options'}</p>
-        <ol>
-            <li>Item 1</li>
-            <li>Item 2</li>
-        </ol>
-        <form>
-            
-        </form>
-    </div>
-);
-//template is converted to an js object by babel
-const appRoot = document.getElementById('app')
+const onFormSubmit = (e) => {
+    e.preventDefault()
+    //e.target -->form .elements ->(Array of children nodes with value as of name attribute) 
+    const option = e.target.elements.option.value
+    if(option) {//If not empty
+        app.options.push(option)
+        e.target.elements.option.value = ''
+        renderTemplate()
+    }
 
-ReactDOM.render(templateTwo, appRoot)
+}
+const clearOptions = () => {
+    app.options = []
+    renderTemplate()
+}
+const numbers = [55, 101, 1000]
+const appRoot = document.getElementById('app')
+const renderTemplate = () => {
+    //template is converted to an js object by babel
+
+    const template = (
+        <div>
+            <h1>{app.title}</h1> 
+            {app.subtitle && <p>{app.subtitle}</p>}
+            {getLocation(app.location)} 
+            <p>{app.options.length > 0 ? 'Here are your options' : 'No options'}</p>
+            <p>{app.options.length}</p>
+            <ol>
+               {
+                app.options.map((option) => <li key={option}>Option : {option}</li>)
+               }
+            </ol>
+            <button onClick={clearOptions}>Remove all</button>
+            <form onSubmit={onFormSubmit}>
+                <input type="text" name="option"></input>
+                <button>Add option</button>
+            </form>
+        </div>
+    );
+
+    ReactDOM.render(template, appRoot)
+
+}
+renderTemplate()
+
+
+
+

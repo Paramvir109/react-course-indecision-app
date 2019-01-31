@@ -1,72 +1,60 @@
-//JSX - Javascript XML
-//babel src/app.js --out-file=public/scripts/app.js --presets=env,react --watch(it will watch for changes)
-
-/*We can write jsx in {} as well
-boolean,undefined,null are ignored by jsx {true}, {null} etc
-(true && 'abc') Here abc is returned but (false && 'abc') false is returned
-jsx doesn't support arrays but it does support arrays
-{[1,2]} is treated as {1}{2}
- numbers.map((number,index) => <p key={index}>Number : {number}</p>) This will return array to {} jsx expression
-We can use dom elements inside arrays in jsx but we do need to specify key for each of them
-This is not usually understood by the browser that's why we use babel to convert it into normal es5 javascript
-See changes in public/scripts/app.js */
-let app = {
-    title : 'Indecision App',
-    subtitle : 'Put your life in hands of your computer',
-    options: [],
-    location : 'New Delhi'
-
-}
-let getLocation = (location) => {
-    if(location) {
-        return  <p>Location : {location}</p>
-    }
-}
-const onFormSubmit = (e) => {
-    e.preventDefault()
-    //e.target -->form .elements ->(Array of children nodes with value as of name attribute) 
-    const option = e.target.elements.option.value
-    if(option) {//If not empty
-        app.options.push(option)
-        e.target.elements.option.value = ''
-        renderTemplate()
-    }
-
-}
-const clearOptions = () => {
-    app.options = []
-    renderTemplate()
-}
-const numbers = [55, 101, 1000]
 const appRoot = document.getElementById('app')
-const renderTemplate = () => {
-    //template is converted to an js object by babel
 
-    const template = (
-        <div>
-            <h1>{app.title}</h1> 
-            {app.subtitle && <p>{app.subtitle}</p>}
-            {getLocation(app.location)} 
-            <p>{app.options.length > 0 ? 'Here are your options' : 'No options'}</p>
-            <p>{app.options.length}</p>
-            <ol>
-               {
-                app.options.map((option) => <li key={option}>Option : {option}</li>)
-               }
-            </ol>
-            <button onClick={clearOptions}>Remove all</button>
-            <form onSubmit={onFormSubmit}>
-                <input type="text" name="option"></input>
-                <button>Add option</button>
-            </form>
-        </div>
-    );
-
-    ReactDOM.render(template, appRoot)
-
+class Header extends React.Component {//Here use capital first letter for class name otherwise wont render
+    render() {//This method must be defined
+        return (
+            <div>
+                <h1>Indecision App</h1>
+                <h2>Put your life in hands of your computer</h2>
+            </div>
+        )
+    }
 }
-renderTemplate()
+class Action extends React.Component {
+    render() {
+        return (
+            <div>
+                <button>What should I do?</button>
+            </div>
+        )
+    }
+}
+class Options extends React.Component {
+    render() {
+        return (
+            <div>
+                <ol>
+                    <li>Option A</li>
+                    <li>Option B</li>
+                </ol>
+            </div>
+        )
+    }
+}
+class AddOption extends React.Component {//Here use capital first letter for class name otherwise wont render
+    render() {//This method must be defined
+        return (
+            <div>
+                <form>
+                    <input type="text" placeholder="Add your option"></input>
+                    <button>Add option</button>
+                </form>
+            </div>
+        )
+    }
+}
 
 
+//<Header /> That's how we write component in jsx
 
+const jsx = (
+    <div>
+        <Header />
+        <Action />
+        <Options />
+        <AddOption />
+    </div>
+    
+);
 
+ReactDOM.render(jsx , appRoot)

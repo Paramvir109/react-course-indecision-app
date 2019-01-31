@@ -1,107 +1,155 @@
-'use strict';
+"use strict";
 
-//JSX - Javascript XML
-//babel src/app.js --out-file=public/scripts/app.js --presets=env,react --watch(it will watch for changes)
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-/*We can write jsx in {} as well
-boolean,undefined,null are ignored by jsx {true}, {null} etc
-(true && 'abc') Here abc is returned but (false && 'abc') false is returned
-jsx doesn't support arrays but it does support arrays
-{[1,2]} is treated as {1}{2}
- numbers.map((number,index) => <p key={index}>Number : {number}</p>) This will return array to {} jsx expression
-We can use dom elements inside arrays in jsx but we do need to specify key for each of them
-This is not usually understood by the browser that's why we use babel to convert it into normal es5 javascript
-See changes in public/scripts/app.js */
-var app = {
-    title: 'Indecision App',
-    subtitle: 'Put your life in hands of your computer',
-    options: [],
-    location: 'New Delhi'
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-};
-var getLocation = function getLocation(location) {
-    if (location) {
-        return React.createElement(
-            'p',
-            null,
-            'Location : ',
-            location
-        );
-    }
-};
-var onFormSubmit = function onFormSubmit(e) {
-    e.preventDefault();
-    //e.target -->form .elements ->(Array of children nodes with value as of name attribute) 
-    var option = e.target.elements.option.value;
-    if (option) {
-        //If not empty
-        app.options.push(option);
-        e.target.elements.option.value = '';
-        renderTemplate();
-    }
-};
-var clearOptions = function clearOptions() {
-    app.options = [];
-    renderTemplate();
-};
-var numbers = [55, 101, 1000];
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 var appRoot = document.getElementById('app');
-var renderTemplate = function renderTemplate() {
-    //template is converted to an js object by babel
 
-    var template = React.createElement(
-        'div',
-        null,
-        React.createElement(
-            'h1',
-            null,
-            app.title
-        ),
-        app.subtitle && React.createElement(
-            'p',
-            null,
-            app.subtitle
-        ),
-        getLocation(app.location),
-        React.createElement(
-            'p',
-            null,
-            app.options.length > 0 ? 'Here are your options' : 'No options'
-        ),
-        React.createElement(
-            'p',
-            null,
-            app.options.length
-        ),
-        React.createElement(
-            'ol',
-            null,
-            app.options.map(function (option) {
-                return React.createElement(
-                    'li',
-                    { key: option },
-                    'Option : ',
-                    option
-                );
-            })
-        ),
-        React.createElement(
-            'button',
-            { onClick: clearOptions },
-            'Remove all'
-        ),
-        React.createElement(
-            'form',
-            { onSubmit: onFormSubmit },
-            React.createElement('input', { type: 'text', name: 'option' }),
-            React.createElement(
-                'button',
+var Header = function (_React$Component) {
+    _inherits(Header, _React$Component);
+
+    function Header() {
+        _classCallCheck(this, Header);
+
+        return _possibleConstructorReturn(this, (Header.__proto__ || Object.getPrototypeOf(Header)).apply(this, arguments));
+    }
+
+    _createClass(Header, [{
+        key: "render",
+        //Here use capital first letter for class name otherwise wont render
+        value: function render() {
+            //This method must be defined
+            return React.createElement(
+                "div",
                 null,
-                'Add option'
-            )
-        )
-    );
+                React.createElement(
+                    "h1",
+                    null,
+                    "Indecision App"
+                ),
+                React.createElement(
+                    "h2",
+                    null,
+                    "Put your life in hands of your computer"
+                )
+            );
+        }
+    }]);
 
-    ReactDOM.render(template, appRoot);
-};
-renderTemplate();
+    return Header;
+}(React.Component);
+
+var Action = function (_React$Component2) {
+    _inherits(Action, _React$Component2);
+
+    function Action() {
+        _classCallCheck(this, Action);
+
+        return _possibleConstructorReturn(this, (Action.__proto__ || Object.getPrototypeOf(Action)).apply(this, arguments));
+    }
+
+    _createClass(Action, [{
+        key: "render",
+        value: function render() {
+            return React.createElement(
+                "div",
+                null,
+                React.createElement(
+                    "button",
+                    null,
+                    "What should I do?"
+                )
+            );
+        }
+    }]);
+
+    return Action;
+}(React.Component);
+
+var Options = function (_React$Component3) {
+    _inherits(Options, _React$Component3);
+
+    function Options() {
+        _classCallCheck(this, Options);
+
+        return _possibleConstructorReturn(this, (Options.__proto__ || Object.getPrototypeOf(Options)).apply(this, arguments));
+    }
+
+    _createClass(Options, [{
+        key: "render",
+        value: function render() {
+            return React.createElement(
+                "div",
+                null,
+                React.createElement(
+                    "ol",
+                    null,
+                    React.createElement(
+                        "li",
+                        null,
+                        "Option A"
+                    ),
+                    React.createElement(
+                        "li",
+                        null,
+                        "Option B"
+                    )
+                )
+            );
+        }
+    }]);
+
+    return Options;
+}(React.Component);
+
+var AddOption = function (_React$Component4) {
+    _inherits(AddOption, _React$Component4);
+
+    function AddOption() {
+        _classCallCheck(this, AddOption);
+
+        return _possibleConstructorReturn(this, (AddOption.__proto__ || Object.getPrototypeOf(AddOption)).apply(this, arguments));
+    }
+
+    _createClass(AddOption, [{
+        key: "render",
+        //Here use capital first letter for class name otherwise wont render
+        value: function render() {
+            //This method must be defined
+            return React.createElement(
+                "div",
+                null,
+                React.createElement(
+                    "form",
+                    null,
+                    React.createElement("input", { type: "text", placeholder: "Add your option" }),
+                    React.createElement(
+                        "button",
+                        null,
+                        "Add option"
+                    )
+                )
+            );
+        }
+    }]);
+
+    return AddOption;
+}(React.Component);
+
+//<Header /> That's how we write component in jsx
+
+var jsx = React.createElement(
+    "div",
+    null,
+    React.createElement(Header, null),
+    React.createElement(Action, null),
+    React.createElement(Options, null),
+    React.createElement(AddOption, null)
+);
+
+ReactDOM.render(jsx, appRoot);

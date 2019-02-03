@@ -5,31 +5,53 @@ const appRoot = document.getElementById('app')
 //multiple same DOM elements etc
 //Props are read only they can only be resend from the parent component only(one way)
 //Whenever parent  state is changed render of parent is called again causing to call render of child components
+//Lifecycle methods (only for class components)-
+/* componentDidMount(){} -> When it actually renders
+   componentDidUpdate(prevProps, prevState){}
+   componentWillUnmount(){} -> When it's about to go away
+   */
 class IndecisionApp extends React.Component {
     constructor(props) {//It gets called with props object 
                         //Constructor always has the right binding for this
 
         super(props)//If we dont call this we wont get access to this.props
         this.state = {
-            options : []
+            options : []//Default value set which is empty array
         }
-        ////We bind the method one time so preventing to bind everytime in render function
+        //We bind the method one time so preventing to bind everytime in render function
 
         this.handleRemoveAll = this.handleRemoveAll.bind(this)
         this.handlePick = this.handlePick.bind(this)
         this.handleAddOption = this.handleAddOption.bind(this)
+        this.handleDeleteOption = this.handleDeleteOption.bind(this)
 
+
+    }
+    componentDidMount() {
+        try {
+            const options = JSON.parse(localStorage.getItem('options'))
+            if(options) {
+                this.setState(() => ({options}))
+            }
+            
+        } catch (e) {
+            //DO nothing
+        }
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if(this.state.options.length !== prevState.options.length) {//Only update when actual data changing
+            const json = JSON.stringify(this.state.options)
+            localStorage.setItem('options', json)
+        }
 
     }
     handleRemoveAll() {//will get called in the same context as the render function(bind is used)
                         //Otherwise this.props wont work here
                         //This will be called in Options component but this.setState wont change options props
                         //there so sending it as a prop in Options
-        this.setState(() => {
-            return{
-                options:[]
-            }
-        })
+        this.setState(() => ({options : []}))//shorthand arrow -> returns an object
+            
+             
     }
     handlePick () {
         const option = Math.floor(Math.random()*this.state.options.length)
@@ -42,73 +64,87 @@ class IndecisionApp extends React.Component {
         if(this.state.options.indexOf(option) > -1) {
             return 'Option already exists'
         }
-        this.setState((prevState) => {
+        this.setState((prevState) => ({options : prevState.options.concat(option)}))
             // prevState.options.push(option) Dont use this as you are directly manipulating the state 
             //Use concat method as it doesnt manipulate the two arrays but result the new array
-            return {
-                options : prevState.options.concat(option)//Concat merges 2 arrays
-                                            //But if single element. Pass it directly
-            }
-        })
+            //Concat merges 2 arrays
+            //But if single element. Pass it directly
+            
+        
+    }
+    handleDeleteOption(optionToRemove) {
+        this.setState((prevState) => ({
+            options: prevState.options.filter((option) => option !== optionToRemove)
+        }))
     }
     render() {
-        const title = 'Indecision App'
         const subtitle = 'Put your life in hands of your computer'
         return (
             <div>
-                <Header title={title} subtitle={subtitle}/>
+                <Header subtitle={subtitle}/>
                 <Action hasOptions={this.state.options.length > 0 } handlePick={this.handlePick} />
-                <Options options={this.state.options} handleRemoveAll={this.handleRemoveAll}/>
+                <Options 
+                    options={this.state.options} 
+                    handleRemoveAll={this.handleRemoveAll} 
+                    handleDeleteOption={this.handleDeleteOption}
+                />
                 <AddOption handleAddOption={this.handleAddOption}/>
             </div>
         )
     }
 }
-class Header extends React.Component {//Here use capital first letter for class name otherwise wont render
-    render() {//This method must be defined
-        return (
-            <div>
-                <h1>{this.props.title}</h1>
-                <h2>{this.props.subtitle}</h2>
-            </div>
-        )
-    }
+// IndecisionApp.defaultProps = { Removing this as we are reading from local storage so any prop sent would be overwritten
+//     options : []
+// }
+const Header = (props) => {
+    return (
+        <div>
+            <h1>{props.title}</h1>
+            {props.subtitle && <h2>{props.subtitle}</h2>}
+        </div>
+    )
 }
-class Action extends React.Component {
-    // handlePick() {
-    //     console.log(this.props)
-    // }
-    render() {
-
-        
-        return (
-            <div>
-                <button 
-                    onClick={this.props.handlePick}
-                    disabled={!this.props.hasOptions}
-                >
-                What should I do?
-                </button>
-            </div>
-        )
-    }
+Header.defaultProps = {
+    title : 'Indecision'//Default value when no prop is passed for title
 }
-class Options extends React.Component {
-   
-    render() {
-        return (
-            <div>
-                <button onClick={this.props.handleRemoveAll}>Remove All</button>
-                {this.props.options.map((option => <Option key={option} optionText={option} />))}
-            </div>
-        )
-    }
+const Action = (props) => {
+    return(
+        <div>
+            <button 
+                onClick={props.handlePick}
+                disabled={!props.hasOptions}
+            >
+            What should I do?
+            </button>
+        </div>
+    )
 }
-class Option extends React.Component {
-    render() {
-        return <li>{this.props.optionText}</li>
-    }
+const Options = (props) => {
+    return (
+        <div>
+                <button onClick={props.handleRemoveAll}>Remove All</button>
+                {props.options.length === 0 && <p>Please add an option to get started</p>}
+                {props.options.map((option) => (
+                    <Option 
+                        key={option} 
+                        optionText={option} 
+                        handleDeleteOption={props.handleDeleteOption}
+                    />)
+                )}
+        </div>
+    )
 }
+const Option = (props) =>{
+    return (
+        <li>{props.optionText} 
+            <button 
+                onClick={(e) => {//Making an inline function
+                    props.handleDeleteOption(props.optionText)
+                }}
+            >
+            Remove</button>
+        </li>)
+ } 
 class AddOption extends React.Component {
     constructor(props) {
         super(props)
@@ -130,7 +166,7 @@ class AddOption extends React.Component {
         return (
             <div>
                 {this.state.error && <p>{this.state.error}</p>}
-                <form onSubmit={this.handleAddOption.bind(this)}>
+                <form onSubmit={this.handleAddOption}>
                     <input name="option" type="text" placeholder="Add your option"></input>
                     <button>Add option</button>
                 </form>
@@ -143,5 +179,14 @@ class AddOption extends React.Component {
 //<Header /> That's how we write component in jsx
 
 
+//Stateless functional component(no state, only props and jsx)(faster than Class)
+// const User = (props) => {
+//     return (
+//         <div>
+//             <p>Name : {props.name}</p>
+//             <p>Age : {props.age}</p>
+//         </div>
+//     )
+// }
 
 ReactDOM.render(<IndecisionApp /> , appRoot)

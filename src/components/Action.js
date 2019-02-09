@@ -1,9 +1,9 @@
 import React from 'react'
 
-const Action = (props) => {
+const Action = (props) => {//Single return statements so use es6 syntax
     return(
         <div>
-            <button 
+            <button className="big-button"
                 onClick={props.handlePick}
                 disabled={!props.hasOptions}
             >

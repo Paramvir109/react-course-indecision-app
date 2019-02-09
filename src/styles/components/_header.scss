@@ -1,0 +1,22 @@
+.header {
+    background-color: $off-black;
+    padding: $m-size 0;
+    margin-bottom: $m-size; //We can also do nesting of styles in here but try to avoid that
+    color:white;
+}
+.header__title {//Just a naming convention. Not any spl meaning(BEM Block element identifier)(title is inside header)
+    margin:0;
+    font-size:$l-size
+}
+.header__subtitle {
+    color: $off-white;
+    font-size:$m-size;
+    margin:0;
+    font-weight: 500;
+}
+@media (min-width : $desktop-breakpoint) {//On min width 45 rem apply these styles
+    .header {
+        margin-bottom: $xl-size;
+
+    }
+}

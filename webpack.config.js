@@ -11,6 +11,14 @@ module.exports = {
             loader : 'babel-loader',
             test : /\.js$/, //Applied on all the files ending in .js()
             exclude : /node_modules/
+        },
+        {
+            test : /\.s?css$/,//Making s optional(We load normalize.css as we,,)
+            use : [
+                'style-loader',
+                'css-loader',
+                'sass-loader'
+            ]
         }]
     },
     devtool : 'cheap-module-eval-source-map',//suitable for develpoment.Helps in debugging in chrome console

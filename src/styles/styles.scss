@@ -1,0 +1,13 @@
+@import './base/settings';//Setting should be imported first
+@import './base/base';//underscore is usesd to name aprtials. Thats how we import them
+@import './components/header';
+@import './components/container';
+@import './components/buttons';
+@import './components/widget';
+@import './components/add-option';
+@import './components/option';
+@import './components/modal';
+
+
+
+
